@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+
+    <script src="script.js"></script>
+
+
+
+ <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="bootstrap.min.js"></script>
+
+
+</head>
+<body ng-app="myApp" style="background-image: url(images.jpg);background-repeat: no-repeat;background-size: 100%;color: white" >
+<div ng-controller="editCtrl">
+
+
+
+    <div class="col-lg-6" style="margin-left: 30%" >
+        <form action="/home" method="get" name="myForm" style=";width: 30em;height: 30em;clear: left;margin-top: 5em">
+            <h2 style="margin-left: 1em">Congratulations!</h2>
+
+            <h3 style="margin-left: 1em">Write your first tweet:</h3><br>
+
+            <div class="form-group">
+                <label>Tweet:</label>
+                <textarea class="form-control" name="tweet" ng-model="message" ng-maxlength="160" cols="40" rows="5"></textarea><br>
+
+            </div>
+            <div class="form-group" >
+                <label>Tags:</label>
+                <input class="form-control" type="text" ng-model="tags">
+            </div>
+            <input type="submit"  value="Send" class="btn btn-success" ng-model="tweet" ng-click="sendTweet()">
+
+            <div style="margin-top: 5em" class="form-group" >
+                <input type="submit"  value="Skip This Step" class="btn btn-primary" style="">
+            </div>
+        </form>
+
+
+
+
+    </div>
+</div>
+</body>
+</html>

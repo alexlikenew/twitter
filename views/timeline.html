@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--BOOTSTRAP-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!--BOOTSTRAP-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script src="script.js"></script>
+
+</head>
+<body ng-app="myApp">
+<div ng-controller="editCtrl" style="margin-top: 2em;margin-left: 2em;" >
+
+    <div style="font-size: 2em;float: left"><a  href="home.html">Back to my profile</a></div>
+
+    <!--LOAD MORE USERS-->
+    <div style="width: 20em;float: left;clear: left">
+        <input type="button" class="btn btn-success" ng-click="loadMoreUsers();showPopup3 = !showPopup3" value="Load All Users">
+
+        <div style="display: inline-block" class="form-group">
+            <label>
+                Type user name:
+            </label>
+            <input style="width: 10em" class="form-control" type="text" ng-model="userSearch">
+        </div>
+
+        <div style="border:1px solid black;border-radius: 4px;text-align: center;width: 10em;margin: 1em;padding: 0.5em;display: none" ng-show="showPopup3"
+             ng-repeat="user in allUsers | filter:userSearch">
+            <a style="color: darkblue">{{user.username}}</a><br>
+            <input type="button" class="btn btn-primary btn-xs" ng-click="showPopup = !showPopup" value="Visit Me">
+            <input type="button" class="btn btn-success btn-xs" style="margin: 5px;" ng-click="followMe(user)" value="Follow Me">
+            <input type="button" class="btn btn-danger btn-xs" style="margin: 3px;" ng-click="unfollowMe(user)" value="Unfollow Me">
+            <div style="display: none" ng-show="showPopup">Here I Am!</div>
+
+
+        </div>
+    </div>
+
+    <!--LOAD Timeline -->
+    <div style="width: 30em;height: auto;float: right">
+        <input type="button" value="Load my Timeline"
+               class="btn btn-primary" ng-click="loadTimeline();showPopup1 = !showPopup1" >
+        <div style="text-align: center;border: 1px solid black;margin-top: 1em;border-radius: 10px;padding: 0.5em;display: none"
+             ng-repeat="post in tweets | orderBy:post.date" ng-show="showPopup1"><span style="font-size: 1.5em">{{post.tweet}}</span><br>
+
+            <!--DATE-->
+            <span style="display: inline-block">{{post.date  | date:'yyyy-MM-dd HH:mm'}}</span><span style="display: block"> by: {{post.username}}</span>
+            <!--remove tweet-->
+            <input ng-click="removeTweet(post)" type="button" value="X" class="btn btn-danger btn-xs" style="margin-top: 3px;">
+
+            <!--make as favourite-->
+            <input class="btn btn-warning btn-xs" style="margin-top: 3px;" type="button" value="Favourite"
+                   ng-click="markAsFavourite(post)">
+
+            <!--retwit-->
+            <input type="button" class="btn btn-success btn-xs" value="Retwit" style="margin-top: 3px;" ng-click="retwit(post)">
+
+            <!--reply to tweet button-->
+            <input class="btn btn-primary btn-xs" value="Reply" type="button" style="margin-top: 3px;" ng-click="toshow = !toshow"><br>
+
+            <!--create message-->Comments:
+            <div ng-repeat="comment in post.reply">{{comment}}</div>
+            <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+            <input class="form-control" ng-model="replyMessage" value="post.reply" type="text">
+            <input type="button" class="btn btn-success btn-xs" value="Send" type="button" style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)" >
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+    <!-- FAVOURITE TWEETS-->
+    <div style="width: 25em;float: right">
+
+        <input type="button" class="btn btn-warning" ng-click="favouritesTweets();showPopup2 = !showPopup2" value="View favourites tweets">
+        <div style="border: 1px solid black;margin: 1em;width: 20em;padding: 1em;display: none;border-radius: 5px;" ng-show="showPopup2"
+             ng-repeat="favouritetweet in myUser.user.favourite">
+            <strong>{{favouritetweet}}</strong><br>
+
+
+        </div>
+
+    </div>
+<!--search-->
+    <div style="width: 20em;float: right;padding: 10px"  class="form-group">
+        <span style="font-size: 2em;">Search:</span>
+        <input style="margin-bottom: 0.5%;width: 15em" type="text" class="form-control" ng-model="textToSearch" name="textToSearch"><br>
+       <span style="font-size: 1.5em">by:</span>
+        <input type="button" class="btn btn-primary" value="Users" ng-click="searchByUser()">
+        <input type="button" class="btn btn-info" value="Tweets"  ng-click="searchByTweet()">
+        <input type="button" class="btn btn-success" value="Tags"  ng-click="searchByTag()">
+        <div ng-repeat="result in searchResult">
+            <h3>{{result.username}}</h3>
+            <h4>{{result.firstName}}</h4>
+            <h4>{{result.lastName}}</h4>
+            <h3>{{result.tweet}}</h3>
+           <h3>{{result.tags}}</h3>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+</html>

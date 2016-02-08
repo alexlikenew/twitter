@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="bootstrap.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+
+    <script src="script.js"></script>
+
+    <style>
+
+        .edit{
+            display: none;
+        }
+
+    </style>
+
+    <script>
+        function edit () {
+            $('.view').hide();
+            $('.edit').show();
+        }
+
+        function cancel () {
+            $('.view').show();
+            $('.edit').hide();
+        }
+        $(window).load(function(){
+            $('#loadMoreTweets').trigger('click');
+            $('#loadInfo').trigger('click');
+
+        });
+
+
+
+
+    </script>
+</head>
+<body  style="background-image: url(images.jpg);background-repeat: no-repeat;background-size: 100%;
+background-attachment: fixed" ng-app="myApp">
+
+<div style="height: auto" ng-controller="editCtrl">
+
+
+    <header style="width: 100%;background-color: white;height: 3.5em;padding: 5px;">
+        <!--signout-->
+        <a class="btn btn-danger" style="float:right;margin: 2px;margin-right: 2em;" href="/signout">Signout</a>
+        <!-- search-->
+        <img src="search.png" ng-click="searchOn = !searchOn" style="width: 2.8em;height: 2.8em;float: right;">
+
+        <!--settings-->
+        <img src="setting.png" ng-click="showdata();showProfile = !showProfile"
+             style="width: 3em;height: 3em;float: right;">
+
+        <!--REFRESH TWEETS-->
+        <input type="button" id="loadMoreTweets" ng-click="loadTimeline();showPopup1 = !showPopup1"
+               class="btn btn-primary" value="Refresh Tweets" style="float: right;margin: 2px">
+        <!--tweet-->
+        <input type="button" value="Tweet" style="float: right;margin: 2px" class="btn btn-info"
+               ng-click="writeTweet = !writeTweet">
+
+
+        <!--<a style="font-size: 1em;border: 1px solid black;width: 10em;float: left" href="timeline.html">Timeline & Search</a>-->
+        <!--<span style="font-size: 1.5em;margin: 10px">Share your tweets</span>-->
+    </header>
+
+    <!--profile info left sidebar-->
+    <div class="col-lg-2"
+         style="height: auto;background-color: white;margin-top: 3em;margin-left: 2em;border: 1px solid #E1E1E1;border-radius: 3px;">
+        <img id="loadInfo" src="MB__home.png" style="width: 75px;height: 75px;border: 1px solid black;margin-top:1em"
+             ng-click="showdata();">
+
+        <h4 style="font-weight: bold">{{myUser.user.firstName}} {{myUser.user.lastName}}</h4>
+        <h5 style="color: gray">{{myUser.user.username}}</h5>
+        <h5 style="font-weight: bold"><span style="color: #00aced" ng-click="">Tweets</span> : {{tweets.length}}</h5>
+        <h5 style="font-weight: bold"><span style="color: #00aced">Following</span> : {{myUser.user.following.length}}
+        </h5>
+        <h5 style="font-weight: bold" ng-click="timeline = !timeline" ng-hide="timeline"><a>Switch to my tweets</a></h5>
+        <h5 style="font-weight: bold" ng-show="timeline" ng-click="timeline = !timeline"><a>Switch to my timeline</a>
+        </h5>
+    </div>
+    <!--profile info left sidebar-->
+
+    <!-- main scene -->
+    <div class="col-lg-6"
+         style="background-color: #EBEBEB;margin-left: 5em;margin-top: 2em;border: 1px solid #E1E1E1;border-radius: 3px;margin-bottom: 2em">
+
+
+        <!--SETTINGS ------------------------------------------------------------->
+        <div style="width: 100%;border: 1px solid none;border-radius: 10px;;display: inline-block;background-color: white;
+        margin-top: 1em">
+            <div ng-show="showProfile">
+                <form role="form" id="info" style="padding: 1em">
+                    <h1>Hello,{{myUser.user.username}}</h1>
+                    <dl>
+                        <div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <dd class="view">{{myUser.user.firstName}}</dd>
+                            <dd class="edit">
+                                <input class="form-control" id="firstName" type="text" ng-model="firstName"
+                                       value="{{myUser.user.firstName}}" placeholder="{{myUser.user.firstName}}" required></dd>
+
+                            <dt>Last Name:</dt>
+                            <dd class="view">{{myUser.user.lastName}}</dd>
+                            <dd class="edit">
+                                <input class="form-control" id="lastName" type="text" ng-model="lastName"
+                                       value="{{myUser.user.lastName}}" placeholder="{{myUser.user.lastName}}" required></dd>
+
+                            <dt>Email:</dt>
+                            <dd class="view">{{myUser.user.emailAddress}}</dd>
+                            <dd class="edit">
+                                <input class="form-control" id="email" type="text" ng-model="emailAddress"
+                                       value="{{myUser.user.emailAddress}}" placeholder="{{myUser.user.emailAddress}}" required></dd>
+
+                            <dt>Country:</dt>
+                            <dd class="view">{{myUser.user.country}}</dd>
+                            <dd class="edit">
+                                <input class="form-control" id="country" type="text" ng-model="country"
+                                       value="{{myUser.user.country}}" placeholder="{{myUser.user.country}}" required></dd >
+
+                            <dt>About Me:</dt>
+                            <dd class="view">{{myUser.user.aboutMe}}</dd>
+                            <dd class="edit">
+                                <input class="form-control" id="aboutMe" type="text" ng-model="aboutMe"
+                                       value="{{myUser.user.aboutMe}}" placeholder="{{myUser.user.aboutMe}}" required></dd>
+                        </div>
+                        <dd class="view">
+                            <div style="width: 5em;height: 5em;border: 1px solid black"></div>
+                        </dd>
+                        <dd class="edit">
+                        </dd>
+                        <br>
+                        <dd class="edit">
+                            <input class="btn btn-success" type="submit" value="Save" ng-click="save();hideEdit=!hideEdit" >
+                            <input class="btn btn-danger" type="submit" value="Cancel" onclick="cancel()" ng-click="hideEdit=!hideEdit">
+                        </dd>
+                    </dl>
+                </form>
+                <!--upload photo-->
+                <form class="edit" role="form" action="/upload" enctype="multipart/form-data" method="post" style="margin: 1em">
+                    <input style="display: none;margin-top: 0" name="username" id="username"
+                           value="{{myUser.user.username}}"/>
+                    <input style="margin-top: 0;color: red" multiple="multiple" name="upload" type="file"/><br>
+                    <input class="btn btn-primary btn-sm" type="submit" value="Upload"/>
+                </form>
+                <p style="margin: 1em">
+                    <a class="btn btn-primary" style="width: 5em" href="#" onclick="edit()" ng-hide="hideEdit" ng-click="hideEdit=!hideEdit">Edit</a>
+                </p>
+
+            </div>
+        </div>
+        <!--SETTINGS ------------------------------------------------------------->
+
+        <!-- SEND TWEET FORM --------------------------------------------------------->
+        <form style="width: 100%;padding: 1em;background-color: white;border: 1px solid #E1E1E1;border-radius: 5px;margin-bottom: 1em;"
+              name="myForm"
+              style="border: 1px solid black;color :white;width: 30em;height: 30em;clear: left ;margin-left: 5em;margin-right: 3em ;display: none "
+              ng-show="writeTweet">
+
+            <div>
+                <label>Tweet:</label>
+                <textarea class="form-control" name="tweet" ng-model="message" ng-maxlength="160" cols="40"
+                          rows="5"></textarea><br>
+            <span style="color: red;font-size: 2em;" class="error" ng-show="myForm.tweet.$error.maxlength">
+        Too long!</span>
+            </div>
+            <div class="form-group">
+                <label>Tags:</label>
+                <input class="form-control" type="text" ng-model="tags">
+            </div>
+            <input type="submit" value="Tweet !" class="btn btn-info" ng-model="tweet" ng-click="sendTweet()">
+        </form>
+        <!-- SEND TWEET FORM --------------------------------------------------------->
+
+        <!--SEARCH -------------------------------------------------------------------->
+        <div style="width: 100%;border: 1px solid none;border-radius: 5px;display: inline-block;background-color: white;
+        margin-top: 1em;padding: 1em;height: auto" ng-show="searchOn">
+            <span style="font-size: 2em;">Search:</span>
+            <input style="margin-bottom: 0.5%;width: 15em;display: inline-block" type="text" class="form-control"
+                   ng-model="textToSearch" name="textToSearch" autofocus>
+            <span style="font-size: 1.5em">by:</span>
+            <input type="button" class="btn btn-primary" value="Users"
+                   ng-click="searchByUser();searchUser = !searchUser;searchTweet = false;searchTag = false">
+            <input type="button" class="btn btn-info" value="Tweets"
+                   ng-click="searchByTweet();searchTweet = !searchTweet;searchUser = false;searchTag = false">
+            <input type="button" class="btn btn-success" value="Tags"
+                   ng-click="searchByTag();searchTag = !searchTag;searchUser = false;searchTag = false;">
+            <!--USER RESULT-->
+            <div style="margin-left: 1em" ng-show="searchUser" ng-repeat="user in searchResult">
+                <h3 style="color:#00aced" ng-click = "openUser = !openUser;loadUserTweets(user)"><a>{{user.username}}</a></h3>
+                <span style="color: gray;font-size: 1.5em">{{user.firstName}}</span>
+                <span style="color: gray;font-size: 1.5em">{{user.lastName}}</span><br>
+
+                <input type="button" class="btn btn-success btn-xs" style="margin-top: 5px" ng-click="followMe(user)" value="Follow Me">
+                <input type="button" class="btn btn-danger btn-xs" style="margin-top: 5px" ng-click="unfollowMe(user)" value="Unfollow Me">
+
+                <div ng-show="openUser" style="width: 50em;height: 50em;z-index: 99999;position:absolute;background-color: whitesmoke;margin-top:-20em;margin-left:-5em;
+                border: 1px solid wheat;border-radius: 5px;">
+                    <input type="button" class="btn btn-danger btn-xs" value="Close" ng-click = "openUser = !openUser" style="float: right;margin: 1em">
+                    <div style="margin: 2em">
+                    <h3 style="color:#00aced" >{{user.username}}</h3>
+                    <span style="color: gray;font-size: 1.5em">{{user.firstName}}</span>
+                    <span style="color: gray;font-size: 1.5em">{{user.lastName}}</span>
+                        <span style="font-weight: bold;font-size: 1em;float: right"><span style="color: #00aced" ng-click="">Tweets</span> : {{tweetsAnotherUser.length}}</span>
+
+
+
+                        <br>
+
+                        <input type="button" class="btn btn-success btn-xs" style="margin-top: 5px" ng-click="followMe(user)" value="Follow Me">
+                        <input type="button" class="btn btn-danger btn-xs" style="margin-top: 5px" ng-click="unfollowMe(user)" value="Unfollow Me">
+
+                    </div>
+
+
+                    <div style="width:100%;border: 1px solid #E1E1E1;margin-top: 1em;border-radius: 6px;padding: 1em;background-color: white"
+                         ng-repeat="post in tweetsAnotherUser | orderBy:post.date">
+                        <div style="float: right">
+                            <span style="color:#00aced">{{ post.username}}</span>
+                            <!--date-->
+                            <span style="">{{post.date  | date:'MM-dd HH:mm'}}</span>
+                            <!--make as favourite-->
+                            <img src="favorites.png" style="width:1.5em;height: 1.5em"  ng-click="markAsFavourite(post)">
+                        </div>
+                        <!--tweet-->
+                        <span style="font-size: 1.5em;display: block;clear: both">{{post.tweet}}</span><br>
+
+                        <div style="float: right">
+
+                            <!--retwit-->
+                            <img src="retweet.png" style="width:2em;height: 2em"  ng-click="retwit(post)" >
+                            <!--reply to tweet button-->
+                            <img src="reply.png" style="width:2em;height: 2em" ng-click="toshow = !toshow">
+
+                        </div>
+                        <br>
+
+                        <!--create message-->
+                        <span>Replies:</span>
+                        <div ng-repeat="comment in post.reply" style="font-weight: 500;font-size: 1.5em">{{comment}}</div>
+                        <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+                            <input class="form-control" ng-model="replyMessage" value="post.reply" type="text" style="width: 25em">
+                            <input type="button" class="btn btn-success btn-xs" value="Send" type="button"
+                                   style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)">
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <!--TWEET RESULT-->
+            <div style="margin:1em;" ng-repeat="post in searchResult" ng-show="searchTweet">
+                <div style="float: right">
+                    <span style="color:#00aced">{{ post.username}}</span>
+                    <!--date-->
+                    <span style="">{{post.date  | date:'MM-dd HH:mm'}}</span>
+                    <!--make as favourite-->
+                    <img src="favorites.png" style="width:1.5em;height: 1.5em"  ng-click="markAsFavourite(post)">
+                </div>
+                <!--tweet-->
+                <span style="font-size: 1.5em;display: block;clear: both">{{post.tweet}}</span><br>
+
+                <div style="float: right">
+                    <!--remove tweet-->
+                    <img src="delete.png" style="width:2em;height: 2em" ng-click="removeTweet(post)">
+                    <!--retwit-->
+                    <img src="retweet.png" style="width:2em;height: 2em"  ng-click="retwit(post)" >
+                    <!--reply to tweet button-->
+                    <img src="reply.png" style="width:2em;height: 2em" ng-click="toshow = !toshow">
+
+                </div>
+                <br>
+                <!--create message-->
+                <span>Replies:</span>
+                <div ng-repeat="comment in post.reply" style="font-weight: 500;font-size: 1.5em">{{comment}}</div>
+                <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+                    <input class="form-control" ng-model="replyMessage" value="post.reply" type="text">
+                    <input type="button" class="btn btn-success btn-xs" value="Send" type="button"
+                           style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)">
+                </div>
+            </div>
+            <!--TAG RESULT-->
+        </div>
+
+        <!--SEARCH -------------------------------------------------------------------->
+
+        <!--LIST FAVOURITE TWEETS ------------------------------------------------------>
+        <div style="width: 100%;border: 1px solid yellow;border-radius: 5px;;display: inline-block;background-color: white;
+        margin-top: 1em;padding: 1em" ng-show="showPopup2" ng-repeat="post in myUser.user.favourite">
+
+            <div style="float: right">
+                <span style="color:#00aced">{{ post.username}}</span>
+                <!--date-->
+                <span style="">{{post.date  | date:'MM-dd HH:mm'}}</span>
+                <!--make as favourite-->
+                <img src="favorites.png" style="width:1.5em;height: 1.5em"  ng-click="markAsFavourite(post)">
+            </div>
+            <!--tweet-->
+            <span style="font-size: 1.5em;display: block;clear: both">{{post.tweet}}</span><br>
+
+            <div style="float: right">
+                <!--remove tweet-->
+                <img src="delete.png" style="width:2em;height: 2em" ng-click="removeTweet(post)">
+                <!--retwit-->
+                <img src="retweet.png" style="width:2em;height: 2em"  ng-click="retwit(post)" >
+                <!--reply to tweet button-->
+                <img src="reply.png" style="width:2em;height: 2em" ng-click="toshow = !toshow">
+
+            </div>
+            <br>
+            <!--create message-->
+            <span>Replies:</span>
+            <div ng-repeat="comment in post.reply" style="font-weight: 500;font-size: 1.5em">{{comment}}</div>
+            <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+                <input class="form-control" ng-model="replyMessage" value="post.reply" type="text">
+                <input type="button" class="btn btn-success btn-xs" value="Send" type="button"
+                       style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)">
+            </div>
+
+
+
+        </div>
+        <!--LIST FAVOURITE TWEETS ------------------------------------------------------>
+
+
+        <!--TIMELINE -------------------------------------------------------------------->
+        <div style="width: 100%;height: auto;display:block;border-radius: 6px;border: 1px solid none;margin-bottom: 1em">
+            <!--tweet-->
+            <div style="width:100%;border: 1px solid #E1E1E1;margin-top: 1em;border-radius: 6px;padding: 1em;background-color: white"
+                 ng-repeat="post in tweets | orderBy:post.date:reverse" ng-hide="timeline">
+                <div style="float: right">
+                    <span style="color:#00aced">{{ post.username}}</span>
+                    <!--date-->
+                    <span style="">{{post.date  | date:'MM-dd HH:mm'}}</span>
+                    <span style="font-weight: bold">{{post.author}}</span>
+                    <!--make as favourite-->
+                    <img src="favorites.png" style="width:1.5em;height: 1.5em"  ng-click="markAsFavourite(post)">
+                </div>
+                <!--tweet-->
+                <span style="font-size: 1.5em;display: block;clear: both">{{post.tweet}}</span><br>
+
+                <div style="float: right">
+                <!--remove tweet-->
+                <img src="delete.png" style="width:2em;height: 2em" ng-click="removeTweet(post)">
+                <!--retwit-->
+                <img src="retweet.png" style="width:2em;height: 2em"  ng-click="retwit(post)" >
+                <!--reply to tweet button-->
+                <img src="reply.png" style="width:2em;height: 2em" ng-click="toshow = !toshow">
+
+                </div>
+                <br>
+
+                <!--create message-->
+                <span>Replies:</span>
+                <div ng-repeat="comment in post.reply" style="font-weight: 500;font-size: 1.5em">{{comment}}</div>
+                <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+                    <input class="form-control" ng-model="replyMessage" value="post.reply" type="text" style="width: 25em">
+                    <input type="button" class="btn btn-success btn-xs" value="Send" type="button"
+                           style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)">
+                </div>
+            </div>
+            <!--tweet-->
+            <!--tweets for my timeline-->
+            <div style="width:100%;border: 1px solid #E1E1E1;margin-top: 1em;border-radius: 6px;padding: 1em;background-color: white;display: none"
+                 ng-repeat="post in tweets | filter : myUser.user.username" ng-show="timeline">
+                <div style="float: right">
+                    <span style="color:#00aced">{{ post.username}}</span>
+                    <!--date-->
+                    <span style="">{{post.date  | date:'MM-dd HH:mm'}}</span>
+                    <span>{{post.author}}</span>
+
+                    <!--make as favourite-->
+                    <img src="favorites.png" style="width:1.5em;height: 1.5em"  ng-click="markAsFavourite(post)">
+                </div>
+                <!--tweet-->
+                <span style="font-size: 1.5em;display: block;clear: both">{{post.tweet}}</span><br>
+
+                <div style="float: right">
+                    <!--remove tweet-->
+                    <img src="delete.png" style="width:2em;height: 2em" ng-click="removeTweet(post)">
+                    <!--retwit-->
+                    <img src="retweet.png" style="width:2em;height: 2em"  ng-click="retwit(post)" >
+                    <!--reply to tweet button-->
+                    <img src="reply.png" style="width:2em;height: 2em" ng-click="toshow = !toshow">
+
+                </div>
+                <br>
+
+                <!--create message-->
+                <span>Replies:</span>
+                <div ng-repeat="comment in post.reply" style="font-weight: 500;font-size: 1.5em">{{comment}}</div>
+                <div style="display: none;width: auto;" class="form-group" ng-show="toshow">
+                    <input class="form-control" ng-model="replyMessage" value="post.reply" type="text" style="width: 25em">
+                    <input type="button" class="btn btn-success btn-xs" value="Send" type="button"
+                           style="margin-top: 3px;" ng-click="replyTweet(post,replyMessage)">
+                </div>
+            </div>
+            <!--tweets for my timeline-->
+
+
+        </div>
+        <!--TIMELINE -------------------------------------------------------------------->
+    </div>
+    <!--main scene-->
+
+<!--RIGHT SIDEBAR FAVOURITES ----------------------------------------------------------->
+    <div class="col-lg-2"
+         style="height: auto;background-color: white;margin-top: 3em;margin-left: 2em;border: 1px solid #E1E1E1;border-radius: 3px;">
+        <h5>Your last favourited tweet:</h5>
+        <div style="border: 1px solid black;margin: 1em;padding: 1em;border-radius: 5px;">
+            <strong>{{myUser.user.favourite[myUser.user.favourite.length-1].tweet}}</strong>
+        </div>
+        <!--favourite tweets-->
+        <input type="button" class="btn btn-warning" ng-click="favouritesTweets();showPopup2 = !showPopup2"
+               value="View favourites tweets" style="margin: 1em">
+    </div>
+
+    <!---->
+
+
+</div>
+
+
+
+</body
